@@ -21,10 +21,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -71,6 +74,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+
 public class UpdateActivity extends AppCompatActivity implements LocationListener {
     public static final String TAP_PRODUK = "tap_produk";
     SimpleDateFormat sdf;
@@ -80,10 +86,9 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     private Context ctx;
     UploadAdapter adapter;
     DataUpload modelupload;
-    List<Datum> dataItemList;
     TextView txtnama, txtphone, txtpos, txtkota, txtalamat, txtid;
-    EditText etData, txtdate;
-    Button btnktp, btnnpwp, btnbukti, btnkirim;
+    EditText etData, txtdate, txtkonversi, txtnote;
+    Button btnktp, btnnpwp, btnbukti, btnkirim, btnkonversi;
     ImageView imagektp, imagenpwp, imagebukti;
     String sm, filePath, latitude, longitude, kode, Gnama, filePath2, filePath3;
     private static final int REQUEST_LOCATION=1;
@@ -94,11 +99,11 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     int monthOfYear;
     double latitude2, longitude2;
     SharedPreferences pref;
-
-    Bitmap selectedImage, selectedImage2, selectedImage3, foto, bitmap;
+    double latitude3, longitude3;
+Bitmap bitmap, bitmap2, bitmap3;
+    Bitmap selectedImage, selectedImage2, selectedImage3, foto;
     private String myLocation;
     private String mylocation2;
-    double latitude3, longitude3;
 
     @SuppressLint("ResourceType")
     @Override
@@ -108,36 +113,11 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sm = pref.getString("mscode", "mscode");
         Gnama = pref.getString("name", "name");
-
-//        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-//        List<Address> addresses = null;
-//        try {
-//            addresses = geocoder.getFromLocationName(myLocation, 1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Address address = addresses.get(0);
-//        if(addresses.size() > 0) {
-//            double latitude = addresses.get(0).getLatitude();
-//            double longitude = addresses.get(0).getLongitude();
-//        }
-        Geocoder geocoder = new Geocoder(UpdateActivity.this);
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocationName(mylocation2, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(addresses.size() > 0) {
-             latitude3= addresses.get(0).getLatitude();
-             longitude3= addresses.get(0).getLongitude();
-        }
-//        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        id = pref.getString("id", "id");
-        //adapter = new UploadAdapter(dataItemList, ctx);
        // etData=findViewById(R.id.date);
         txtdate= findViewById(R.id.txtdate);
+        txtnote=findViewById(R.id.txtnote);
         txtid= findViewById(R.id.txtid);
+        txtkonversi = findViewById(R.id.txtkonversi);
         myCalendar = Calendar.getInstance();
 //        date = new DatePickerDialog.OnDateSetListener() {
 //            @Override
@@ -154,7 +134,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         datum = getIntent().getParcelableExtra("id");
        // datum = getIntent().getParcelableExtra(TAP_PRODUK);
         //txtid.setText(modelupload.getData().get(i).get);
-        txtid.setText(datum.getId());
 //        etData.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -170,6 +149,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         btnktp= findViewById(R.id.btnktp);
         btnnpwp= findViewById(R.id.btnnpwp);
         btnbukti= findViewById(R.id.btnbukti);
+        btnkonversi= findViewById(R.id.btnkonversi);
         imagektp= findViewById(R.id.imagektp);
         imagenpwp= findViewById(R.id.imagenpwp);
         imagebukti= findViewById(R.id.imagebukti);
@@ -183,13 +163,11 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         txtpos.setText(datum.getPostCode());
         txtkota.setText(datum.getCity());
         txtalamat.setText(datum.getAddress());
+
         initSpinnerPickUp();
         initSpinnerReason();
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-
-       // String upload= getIntent().getStringExtra("username");
-
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -226,7 +204,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     imagektp.setVisibility(View.VISIBLE);
                     imagenpwp.setVisibility(View.VISIBLE);
                 }
-
             }
 
             @Override
@@ -238,9 +215,26 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 public void onClick(View v) {
                    // Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
                     capturepicktp();
+
                 }
             });
-
+            btnkonversi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String location= txtalamat.getText().toString();
+                    Geocoder geocoder = new Geocoder(UpdateActivity.this);
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocationName(location, 1);
+                        Address add= addresses.get(0);
+                        latitude3 = add.getLatitude();
+                        longitude3 = add.getLongitude();
+                        txtkonversi.setText(latitude3+","+longitude3);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             btnnpwp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -252,7 +246,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 @Override
                 public void onClick(View v) {
                     locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
                     if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
                         onGPS();
                     } else {
@@ -267,17 +260,13 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 @Override
                 public void onClick(View v) {
                     //sendDataActivity();
-
                     sendDataUpload();
                     finish();
                 }
             });
-
+            txtkonversi.setText(latitude3+","+longitude3);
     }
 
-    private void init(){
-
-    }
 
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
@@ -287,7 +276,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void capturepicktp()
     {
-
         Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
@@ -297,7 +285,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void capturepicnpwp()
     {
-
         Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
@@ -307,7 +294,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void capturepicbukti()
     {
-
         Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
@@ -324,19 +310,16 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage = BitmapFactory.decodeFile(filePath);
             imagektp.setImageBitmap(selectedImage);
-            //foto= bitmap;
         }
         if (requestCode == 1214 && resultCode == Activity.RESULT_OK) {
             filePath2 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage2 = BitmapFactory.decodeFile(filePath2);
             imagenpwp.setImageBitmap(selectedImage2);
-            //foto= bitmap;
         }
         if (requestCode == 1215 && resultCode == Activity.RESULT_OK) {
             filePath3 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage3 = BitmapFactory.decodeFile(filePath3);
             imagebukti.setImageBitmap(selectedImage3);
-            foto= bitmap;
         }
     }
 
@@ -428,11 +411,9 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
             @Override
             public void onFailure(Call<ModelPickup> call, Throwable t) {
-
                 Toast.makeText(UpdateActivity.this, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void initSpinnerReason(){
@@ -513,8 +494,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         String[] shiftr = spinnerr.split(" ");
         String spinnerrr = shiftr[0];
 
-        //
-
         APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
         Call<PostUpload2> postAdd = apiInterface.sendDataUpload2(
                 toRequestBody(AppUtil.replaceNull(datum.getId())),
@@ -527,7 +506,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 toRequestBody(AppUtil.replaceNull(datum.getDob())),
                 toRequestBody(AppUtil.replaceNull(datum.getGender())),
                 toRequestBody(AppUtil.replaceNull(datum.getAddress())),
-                toRequestBody(AppUtil.replaceNull(datum.getAddressGeotag())),
+                toRequestBody(AppUtil.replaceNull(txtkonversi.getText().toString())),
                 toRequestBody(AppUtil.replaceNull(datum.getPostCode())),
                 toRequestBody(AppUtil.replaceNull(datum.getCity())),
                 toRequestBody(AppUtil.replaceNull(datum.getCity2())),
@@ -578,7 +557,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 toRequestBody(AppUtil.replaceNull(datum.getTanggalDistribusi())),
                 toRequestBody(AppUtil.replaceNull(datum.getNoteIinprocessed())),
                 toRequestBody(AppUtil.replaceNull(datum.getProduct())),
-                toRequestBody(AppUtil.replaceNull(datum.getTanggalReschedule())),
+                toRequestBody(AppUtil.replaceNull(txtdate.getText().toString())),
                 toRequestBody(AppUtil.replaceNull(datum.getSourceCode())),
                 toRequestBody(AppUtil.replaceNull(now)),
                 toRequestBody(AppUtil.replaceNull(datum.getStatusValidasi())),
@@ -598,7 +577,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 toRequestBody(AppUtil.replaceNull(datum.getCallBy())),
                 toRequestBody(AppUtil.replaceNull(datum.getCallDate())),
                 toRequestBody(AppUtil.replaceNull(datum.getCallTime())),
-                toRequestBody(AppUtil.replaceNull(datum.getNotes()))
+                toRequestBody(AppUtil.replaceNull(txtnote.getText().toString()))
         );
 
         postAdd.enqueue(new Callback<PostUpload2>() {

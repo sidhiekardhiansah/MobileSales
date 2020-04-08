@@ -86,38 +86,24 @@ public class GambarActivity extends AppCompatActivity {
         btnubah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String location= txtalamat.getText().toString();
+                Geocoder geocoder = new Geocoder(GambarActivity.this);
+                List<Address> addresses = null;
                 try {
-                    Geocoder geocoder = new Geocoder(GambarActivity.this);
-                    List<Address> geoResults = geocoder.getFromLocationName(txtalamat.getText().toString(), 1);
-                    while (geoResults.size()==0) {
-                        geoResults = geocoder.getFromLocationName(txtalamat.getText().toString(), 1);
-                    }
-                    if (geoResults.size()>0) {
-                        Address addr = geoResults.get(0);
-
-                        myLocation.setLatitude(addr.getLatitude());
-                        myLocation.setLongitude(addr.getLongitude());
-                        txtkonversi.setText((CharSequence) myLocation);
-                    }
-                } catch (Exception e) {
-                    System.out.print(e.getMessage());
+                    addresses = geocoder.getFromLocationName(location, 1);
+                    Address add= addresses.get(0);
+                     latitude3 = add.getLatitude();
+                     longitude3 = add.getLongitude();
+                    txtkonversi.setText(latitude3+","+longitude3);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-//                List<Address> addresses = null;
-//                try {
-//                    addresses = geocoder.getFromLocationName(mylocation2, 1);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                if(addresses.size() > 0) {
-//                    latitude3= addresses.get(0).getLatitude();
-//                    longitude3= addresses.get(0).getLongitude();
-//                }
             }
         });
-
-        txtkonversi.setText((CharSequence) myLocation);
+        txtkonversi.setText(latitude3+","+longitude3);
     }
+
+
 
     private void capturepicktp()
     {

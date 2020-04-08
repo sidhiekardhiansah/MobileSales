@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,17 +20,22 @@ import com.rkrzmail.mobilesales.R;
 import com.rkrzmail.mobilesales.UpdateActivity;
 import com.rkrzmail.mobilesales.model.dataupload.DataUpload;
 import com.rkrzmail.mobilesales.model.dataupload.Datum;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     private List<Datum> dataItemList;
+    private List<Datum> mFilteredList;
     DataUpload modelupload;
     Datum datum;
     Context ctx;
     //utk membedakan xml
     SharedPreferences pref;
-    public UploadAdapter(List<Datum> dataItemList ) {
+    public UploadAdapter(List<Datum> dataItemList) {
         this.dataItemList = dataItemList;
+        this.mFilteredList = new ArrayList<>(dataItemList);
     }
 
 
@@ -67,14 +74,63 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
-
-
-
-
     @Override
     public int getItemCount() {
         return dataItemList == null ? 0 : dataItemList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                List<Datum> filteredList = new ArrayList<>();
+                if(charSequence.toString().isEmpty()){
+                    filteredList.addAll(mFilteredList);
+                } else {
+                    for (Datum datum : mFilteredList){
+                        if (datum.getUsername().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                            filteredList.add(datum);
+                        }
+                    }
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+//                String charString = charSequence.toString();
+//
+//                if (charString.isEmpty()) {
+//
+//                    dataItemList = mFilteredList;
+//                } else {
+//
+//                    List<Datum> filteredList = new ArrayList<>();
+//
+//                    for (Datum datum : mFilteredList) {
+//
+//                        if (datum.getUsername().toLowerCase().contains(charString)) {
+//                            filteredList.add(datum);
+//                        }
+//                    }
+
+//                    dataItemList = filteredList;
+//                }
+
+
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                dataItemList.clear();
+                dataItemList.addAll((Collection<? extends Datum>) filterResults.values);
+//                mFilteredList = (List<Datum>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 
     static class Penampung extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView txtnama, txtcase, txtketerangan, txtcis, tctcampaign, txtphone, txtpos, txtkota, txtalamat, txtid, txtunikid,txtidform;

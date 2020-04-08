@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SecondActivity">
+    tools:context=".UpdateActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,13 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/txtid"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="hks"
-                android:layout_marginLeft="20dp"/>
 
 
             <LinearLayout
@@ -63,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:text="TextView"
                     android:layout_weight="1"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -124,6 +116,21 @@
                     android:text="TextView"
                     android:layout_weight="1"/>
             </LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="90dp"
+                android:id="@+id/btnkonversi"
+                android:text="konversi alamat"></Button>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="30dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtkonversi"
+                android:enabled="false"></EditText>
     <Spinner
         android:layout_marginLeft="20dp"
         android:layout_marginRight="30dp"
@@ -163,8 +170,12 @@
 <!--                android:focusable="false"/>-->
             <EditText
                 android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="30dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtdate"></EditText>
+                android:id="@+id/txtdate"
+                android:hint="Masukkan tanggal ulang"></EditText>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
