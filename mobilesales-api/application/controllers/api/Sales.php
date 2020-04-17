@@ -50,6 +50,42 @@ class Sales extends REST_Controller
         }
     }
 
+    public function gagalpickup_get(){
+       
+        $pickupgagal = $this->Sales_model->getGagal();
+
+        if($pickupgagal){
+        $this->response([
+            'status' => true,
+            'message' => 'data gagal pick up',
+            'data' => $pickupgagal
+        ], REST_Controller::HTTP_OK);
+    } else {
+        $this->response([
+            'status' => false,
+            'message' => 'data not found'
+        ], REST_Controller::HTTP_NOT_FOUND);
+    }
+}
+
+public function cancelpickup_get(){
+       
+    $pickupcancel = $this->Sales_model->getCancel();
+
+    if($pickupcancel){
+    $this->response([
+        'status' => true,
+        'message' => 'data cancel pick up',
+        'data' => $pickupcancel
+    ], REST_Controller::HTTP_OK);
+} else {
+    $this->response([
+        'status' => false,
+        'message' => 'data not found'
+    ], REST_Controller::HTTP_NOT_FOUND);
+}
+}
+
    
 
     public function reason_get(){

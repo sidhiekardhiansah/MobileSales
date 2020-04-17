@@ -32,10 +32,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.2'
-    //implementation 'com.github.robinkrsingh:easylocation:0.1.0'
     implementation 'com.github.maayyaannkk:ImagePicker:1.0.4'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.github.jrizani:JRDateTimePicker:1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 }

@@ -83,7 +83,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     private static final int REQUEST_LOCATION = 1;
     Spinner spinnerpickup, spinnerreason, spinnerreasongagal, spinnerreasoncancel;
     LocationManager locationManager;
-
     private Calendar myCalendar;
     double latitude2, longitude2;
     SharedPreferences pref;
@@ -334,16 +333,19 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage = BitmapFactory.decodeFile(filePath);
             imagektp.setImageBitmap(selectedImage);
+            Log.d("UpdateActivity", "Onactivityresultsetimagenpwp" +filePath);
         }
         if (requestCode == CAMERA2 && resultCode == Activity.RESULT_OK) {
             filePath2 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage2 = BitmapFactory.decodeFile(filePath2);
             imagenpwp.setImageBitmap(selectedImage2);
+            Log.d("UpdateActivity", "Onactivityresultsetimagektp" +filePath2);
         }
         if (requestCode == CAMERA3 && resultCode == Activity.RESULT_OK) {
             filePath3 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
             selectedImage3 = BitmapFactory.decodeFile(filePath3);
             imagebukti.setImageBitmap(selectedImage3);
+            Log.d("UpdateActivity", "Onactivityresultsetimagebukti" +filePath3);
         }
     }
 

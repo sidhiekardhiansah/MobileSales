@@ -5,8 +5,19 @@ class Sales_model extends CI_Model
    
     public function getPickUp()
     {
-         return $this->db->get('ref_status')->result_array();
+        //  return $this->db->get('ref_status')->result_array();
+         return $this->db->get_where('ref_status', ['flag' => '1'])->result_array();
     }
+
+    public function getGagal()
+    {
+         return $this->db->get('ms_reason_gagal')->result_array();
+    }
+    public function getCancel()
+    {
+         return $this->db->get('ms_reason_cancel')->result_array();
+    }
+
         
     public function getUpload(){
             return $this->db->get('tbl_upload_ms_detail')->result_array();
