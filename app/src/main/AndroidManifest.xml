@@ -3,15 +3,15 @@
     package="com.rkrzmail.mobilesales">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
+
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -21,13 +21,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GambarActivity"></activity>
+        <activity android:name=".login.LoginSlide2"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".GambarActivity" />
         <activity android:name=".model.tes.TesActivity" />
         <activity android:name=".UpdateActivity" />
-        <activity android:name=".login.LoginSlide2">
+        <activity
+            android:name=".splash.SplassActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

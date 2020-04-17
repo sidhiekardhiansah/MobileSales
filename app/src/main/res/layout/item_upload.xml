@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginTop="10dp">
-
-<androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    card_view:cardCornerRadius="5dp"
     android:id="@+id/cardview"
     android:background="@color/backgroundcolor">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtnam"
-                android:layout_marginTop="10dp"
-                android:layout_width="85dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:text="Nama"
-                android:layout_marginLeft="20dp"/>
+                android:fontFamily="sans-serif-black"
+                android:text="Nama" />
 
             <TextView
                 android:id="@+id/txtnama"
@@ -35,6 +33,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
                 android:text="TextView" />
         </LinearLayout>
         <LinearLayout
@@ -43,17 +42,15 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtca"
-
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="No. Case : "
-                android:layout_marginLeft="20dp"/>
-
+                android:fontFamily="sans-serif-black"
+                android:text="No. Case  " />
             <TextView
                 android:id="@+id/txtcase"
-
+                android:fontFamily="sans-serif-black"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -66,20 +63,18 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtket"
-
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Keterangan :"
-                android:layout_marginLeft="20dp"/>
-
+                android:fontFamily="sans-serif-black"
+                android:text="Keterangan " />
             <TextView
                 android:id="@+id/txtketerangan"
-
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
                 android:text="TextView" />
         </LinearLayout>
         <LinearLayout
@@ -88,15 +83,15 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtci"
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="No. Cis : "
-                android:layout_marginLeft="20dp"/>
-
+                android:fontFamily="sans-serif-black"
+                android:text="No. Cis  " />
             <TextView
                 android:id="@+id/txtcis"
+                android:fontFamily="sans-serif-black"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -107,16 +102,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
-                android:id="@+id/txtpho"
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="No. HP : "
-                android:layout_marginLeft="20dp"/>
+                android:fontFamily="sans-serif-black"
+                android:text="Telepon  " />
 
             <TextView
                 android:id="@+id/txtphone"
+                android:fontFamily="sans-serif-black"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -129,20 +126,18 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtcampai"
-
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Campaign : "
-                android:layout_marginLeft="20dp"/>
-
+                android:fontFamily="sans-serif-black"
+                android:text="Campaign  " />
             <TextView
                 android:id="@+id/txtcampaign"
-
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
                 android:text="TextView" />
         </LinearLayout>
         <LinearLayout
@@ -152,19 +147,18 @@
 
             <TextView
                 android:id="@+id/txtkot"
-
-                android:layout_width="80dp"
+                android:layout_width="95dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Kota : "
-                android:layout_marginLeft="20dp"/>
-
+                android:fontFamily="sans-serif-black"
+                android:text="Kota " />
             <TextView
                 android:id="@+id/txtkota"
-
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
                 android:text="TextView" />
         </LinearLayout>
 
@@ -172,23 +166,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/txtpo"
 
-                    android:layout_width="80dp"
+                <TextView
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Kode Pos : "
-                    android:layout_marginLeft="20dp"/>
+                    android:fontFamily="sans-serif-black"
+                    android:text="Kode Pos  " />
 
                 <TextView
                     android:id="@+id/txtpos"
-
                     android:layout_width="300dp"
+                    android:fontFamily="sans-serif-black"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="TextView" />
-
             </LinearLayout>
 
         <LinearLayout
@@ -197,21 +190,23 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="94dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Alamat : "
-                android:layout_marginLeft="20dp"/>
+                android:fontFamily="sans-serif-black"
+                android:text="Alamat  " />
 
             <TextView
                 android:id="@+id/txtalamat"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="TextView"
+                android:fontFamily="sans-serif-black"
+                android:layout_marginBottom="10dp"/>
 
         </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
-</LinearLayout>

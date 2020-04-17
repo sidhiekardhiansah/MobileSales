@@ -62,7 +62,7 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 " "+(dataItemList.get(position).getPhone7()+" "+(dataItemList.get(position).getPhone8()+" "+(dataItemList.get(position).getPhone9()+" "+(dataItemList.get(position).getPhone10()+" "+(dataItemList.get(position).getPhone11()+" "+
                         (dataItemList.get(position).getPhone12()+" "+(dataItemList.get(position).getPhone13()+" "+(dataItemList.get(position).getPhone14()+" "+(dataItemList.get(position).getPhone15()))))))))))))))));
         ((Penampung)holder).txtpos.setText((dataItemList.get(position).getPostCode()));
-        ((Penampung)holder).txtkota.setText((dataItemList.get(position).getCity()));
+        ((Penampung)holder).txtkota.setText((dataItemList.get(position).getCity())+" "+(dataItemList.get(position).getCity2()));
         ((Penampung)holder).txtalamat.setText((dataItemList.get(position).getAddress()));
         ((Penampung)holder).cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,22 +168,6 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //                     v.getContext().startActivity(intent);
 //                }
 //            });
-        }
-        public Datum createNewUpload() {
-            datum = new Datum();
-            datum.setUsername(txtnama.getText().toString());
-            datum.setPhone1(txtphone.getText().toString());
-            datum.setPhone2(txtphone.getText().toString());
-            datum.setPhone3(txtphone.getText().toString());
-            datum.setPhone4(txtphone.getText().toString());
-            datum.setPhone5(txtphone.getText().toString());
-            datum.setPhone6(txtphone.getText().toString());
-            datum.setPhone7(txtphone.getText().toString());
-            datum.setPostCode(txtpos.getText().toString());
-            datum.setCity(txtkota.getText().toString());
-            datum.setAddress(txtalamat.getText().toString());
-
-            return datum;
         }
 
         @Override

@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity  {
     }
     private void getUpload() {
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<DataUpload> nikita = apiInterface.getUpload();
+        final Call<DataUpload> nikita = apiInterface.getUpload("sidik123");
 
         nikita.enqueue(new Callback<DataUpload>() {
             @Override

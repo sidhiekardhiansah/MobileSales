@@ -34,6 +34,7 @@ import com.rkrzmail.mobilesales.R;
 import com.rkrzmail.mobilesales.model.dataupload.DataUpload;
 import com.rkrzmail.mobilesales.model.dataupload.Datum;
 import com.rkrzmail.mobilesales.model.pickup.ModelPickup;
+import com.rkrzmail.mobilesales.model.pickup2.ModelPickup2;
 import com.rkrzmail.mobilesales.model.reason.ModelReason;
 import com.rkrzmail.mobilesales.model.upload.PostUpload2;
 
@@ -233,20 +234,21 @@ public class TesActivity extends AppCompatActivity implements LocationListener{
 
     private void initSpinnerPickUp(){
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<ModelPickup> data = apiInterface.getPickUp();
-        data.enqueue(new Callback<ModelPickup>() {
+        final Call<ModelPickup2> data = apiInterface.getPickUp("sidik123");
+        data.enqueue(new Callback<ModelPickup2>() {
             @Override
-            public void onResponse(Call<ModelPickup> call, Response<ModelPickup> response) {
+            public void onResponse(Call<ModelPickup2> call, Response<ModelPickup2> response) {
                 if (response.isSuccessful()) {
-                    ModelPickup listdata = response.body();
+                    ModelPickup2 listdata = response.body();
                     List<String> listSpinner = new ArrayList<String>();
                     for (int i = 0; i < listdata.getData().size(); i++){
                         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         pref.edit().putString("kode",listdata.getData().get(i).getKodePickUp().toString()).commit();
                         String code = listdata.getData().get(i).getKodePickUp();
                         String status= listdata.getData().get(i).getStatus();
+                        String flag= listdata.getData().get(i).getFlag();
                         // listSpinner.add(code);
-                        listSpinner.add(code +"  "+status);
+                        listSpinner.add(code +"  "+status+" "+flag);
                         //listSpinner.add(selesai);
                     }
                     listSpinner.add(0, "- Pilih -");
@@ -259,7 +261,7 @@ public class TesActivity extends AppCompatActivity implements LocationListener{
                 }
             }
             @Override
-            public void onFailure(Call<ModelPickup> call, Throwable t) {
+            public void onFailure(Call<ModelPickup2> call, Throwable t) {
                 Toast.makeText(TesActivity.this, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
             }
         });
@@ -267,7 +269,7 @@ public class TesActivity extends AppCompatActivity implements LocationListener{
 
     private void initSpinnerReason(){
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<ModelReason> data = apiInterface.getReason();
+        final Call<ModelReason> data = apiInterface.getReason("sidik123");
         data.enqueue(new Callback<ModelReason>() {
             @Override
             public void onResponse(Call<ModelReason> call, Response<ModelReason> response) {

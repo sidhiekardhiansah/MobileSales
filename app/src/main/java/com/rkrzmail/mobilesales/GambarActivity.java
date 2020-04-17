@@ -1,6 +1,7 @@
 package com.rkrzmail.mobilesales;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,8 +25,12 @@ import com.rkrzmail.mobilesales.APIService.APIInterfacesRest;
 import com.rkrzmail.mobilesales.model.tes.UpdateTes;
 import com.rkrzmail.mobilesales.model.dataupload.Datum;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
@@ -32,11 +41,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.os.Environment.getExternalStoragePublicDirectory;
+
 public class GambarActivity extends AppCompatActivity {
     Button btnktp, btnnpwp, btnbukti, btnkirim, btnubah;
     ImageView imagektp, imagenpwp, imagebukti;
     EditText txtid, txtalamat, txtkonversi;
-    String sm, filePath, latitude, longitude, kode, mylocation2, filePath2, filePath3;
+    String sm, filePath, latitude, longitude, kode, mylocation2, filePath2, filePath3, pathToFile;
     double latitude3, longitude3;
     Datum datum;
     private Address myLocation;
@@ -102,6 +113,8 @@ public class GambarActivity extends AppCompatActivity {
         });
         txtkonversi.setText(latitude3+","+longitude3);
     }
+
+
 
 
 

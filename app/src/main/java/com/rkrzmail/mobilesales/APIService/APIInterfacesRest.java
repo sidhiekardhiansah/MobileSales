@@ -8,30 +8,38 @@ package com.rkrzmail.mobilesales.APIService;
 
 import com.rkrzmail.mobilesales.model.Login.ModelLogin;
 import com.rkrzmail.mobilesales.model.activity.PostActivity;
+import com.rkrzmail.mobilesales.model.cancelpickup.GetCancelPickUp;
+import com.rkrzmail.mobilesales.model.gagalpickup.GetGagalPickUp;
+import com.rkrzmail.mobilesales.model.pickup.ModelPickup;
+import com.rkrzmail.mobilesales.model.pickup2.ModelPickup2;
 import com.rkrzmail.mobilesales.model.tes.UpdateTes;
 import com.rkrzmail.mobilesales.model.tes.modeltes;
 import com.rkrzmail.mobilesales.model.dataupload.DataUpload;
-import com.rkrzmail.mobilesales.model.pickup.ModelPickup;
 import com.rkrzmail.mobilesales.model.reason.ModelReason;
 import com.rkrzmail.mobilesales.model.upload.PostUpload2;
 
+import java.util.HashMap;
 import java.util.Map;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 public interface APIInterfacesRest {
-//    @GET("login_sales?username=K1001005&password=1981-04-17")
-//    Call<ModelLogin> getData(@Query("x-api-key") String apikey);
 
     @GET("login_sales")
     Call<ModelLogin> getData(@QueryMap Map<String, String> params1, @QueryMap Map<String, String> params2);
 
-    //@Headers("Content-Type: application/json")
     @Multipart
     @POST("upload2")
     Call<PostUpload2> sendDataUpload2(
@@ -119,24 +127,24 @@ public interface APIInterfacesRest {
             @Part("notes") RequestBody notes
     );
 
+
     @Multipart
     @POST("activity")
     Call<PostActivity> sendDataActivity(
             @Part("id_form") RequestBody id_form,
-            @Part("id_detail") RequestBody unique_id,
-            @Part("action") RequestBody cabang,
-            @Part("distribusi_from") RequestBody no_case,
-            @Part("distribusi_to") RequestBody cis,
-            @Part("ms_code") RequestBody name,
-            @Part("status") RequestBody dob,
-            @Part("keterangan") RequestBody gender,
-            @Part("created_date") RequestBody address,
-            @Part("created_by") RequestBody address_geotag
+            @Part("id_detail") RequestBody id_detail,
+            @Part("action") RequestBody action,
+            @Part("distribusi_from") RequestBody distribusi_from,
+            @Part("distribusi_to") RequestBody distribusi_to,
+            @Part("ms_code") RequestBody ms_code,
+            @Part("status") RequestBody status,
+            @Part("keterangan") RequestBody keterangan,
+            @Part("created_date") RequestBody created_date,
+            @Part("created_by") RequestBody created_by
     );
     @Multipart
     @POST("tes")
     Call<modeltes> sendTes(
-
             @Part MultipartBody.Part fotonpwp,
             @Part MultipartBody.Part fotoktp,
             @Part MultipartBody.Part fotobukti
@@ -146,7 +154,6 @@ public interface APIInterfacesRest {
     @POST("tesedit")
     Call<UpdateTes> UpdateTes(
             @Part("id") RequestBody id,
-
             @Part MultipartBody.Part fotonpwp,
             @Part MultipartBody.Part fotoktp,
             @Part MultipartBody.Part fotobukti
@@ -154,12 +161,18 @@ public interface APIInterfacesRest {
 
 
     @GET("upload")
-    Call<DataUpload> getUpload();
+    Call<DataUpload> getUpload(@Query("X-API-KEY") String apikey);
+
+    @GET("gagalpickup")
+    Call<GetGagalPickUp> getGagalPickUp(@Query("X-API-KEY") String apikey);
+
+    @GET("cancelpickup")
+    Call<GetCancelPickUp> getCancelPickUp(@Query("X-API-KEY") String apikey);
 
     @GET("pickup")
-    Call<ModelPickup> getPickUp();
+    Call<ModelPickup2> getPickUp(@Query("X-API-KEY") String apikey);
 
     @GET("reason")
-    Call<ModelReason> getReason();
+    Call<ModelReason> getReason(@Query("X-API-KEY") String apikey);
 
 }
