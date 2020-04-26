@@ -28,7 +28,7 @@ public class APIClient2 implements Interceptor{
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         Request authenticatedRequest = request.newBuilder()
-                .header("X-API-KEY", "sidik123")
+                .header("X-API-KEY", "B3ndhilDik4")
                 .header("Authorization", credentials)
                 .build();
         return chain.proceed(authenticatedRequest);
@@ -37,7 +37,7 @@ public class APIClient2 implements Interceptor{
     public static Retrofit getClient() {
         OkHttpClient client = new OkHttpClient
                 .Builder()
-                .addInterceptor(new APIClient2("admin", "1234"))
+                .addInterceptor(new APIClient2("admin", "B3ndhilDika"))
                 .build();
 
         GsonBuilder gb = new GsonBuilder();

@@ -62,8 +62,5 @@ class Sales_model extends CI_Model
         $this->db->insert('tes', $data);
         return $this->db->affected_rows();
     }
-
-
-
     
 }

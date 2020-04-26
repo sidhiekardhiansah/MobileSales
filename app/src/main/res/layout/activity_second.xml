@@ -161,14 +161,6 @@
                         android:layout_marginRight="30dp"
                         android:fontFamily="sans-serif-black"></Spinner>
 
-                    <Spinner
-                        android:id="@+id/spinnerreason"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="30dp"
-                        android:fontFamily="sans-serif-black"></Spinner>
 
                     <Spinner
                         android:id="@+id/spinnerreasongagal"
@@ -197,27 +189,18 @@
                         android:layout_marginRight="30dp"
                         android:hint="Masukkan Catatan"></EditText>
 
-
-                    <!--            <EditText-->
-                    <!--                android:id="@+id/date"-->
-                    <!--                android:layout_marginLeft="20dp"-->
-                    <!--                android:layout_marginTop="10dp"-->
-                    <!--                android:layout_marginRight="30dp"-->
-                    <!--                android:layout_width="wrap_content"-->
-                    <!--                android:layout_height="wrap_content"-->
-                    <!--                android:ems="10"-->
-                    <!--                android:hint="DD/MM/YYYY"-->
-                    <!--                android:inputType="date"-->
-                    <!--                android:focusable="false"/>-->
-                    <TextView
-                        android:id="@+id/txtreskedule"
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/btndate"
+                        android:layout_width="253dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="30dp"
-                        android:fontFamily="sans-serif-black"
-                        android:text="Format YYYY-MM-DD"></TextView>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/imagenpwp"
+                        android:gravity="center"
+                        android:text="Tanggal Reschedule"
+                        android:textColor="#ffff"
+                        android:textSize="15sp" />
 
                     <EditText
                         android:id="@+id/txtdate"
@@ -225,30 +208,39 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="30dp"></EditText>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="30dp"
-                        android:hint="Masukkan tanggal ulang"></EditText>
+                        android:textSize="24px"
+                        android:fontFamily="sans-serif-black"
+                        android:text="Note : Untuk hasil maksimal saat upload gambar ambil file dari galeri"></TextView>
 
 
                     <Button
                         android:id="@+id/btnktp"
-                        android:layout_width="150dp"
+                        android:layout_width="157dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:background="@drawable/imagenpwp"
                         android:gravity="center"
-                        android:text="foto KTP"
+                        android:text="foto NPWP"
                         android:textColor="#ffff"
                         android:textSize="15sp" />
 
+
                     <ImageView
-                        android:id="@+id/imagektp"
-                        android:layout_width="300dp"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/foun"></ImageView>
+                        android:id="@+id/imagenpwp"
+                        android:src="@drawable/foun"
+                        android:padding="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="400dp"
+                        android:layout_gravity="center_horizontal" />
 
                     <Button
                         android:id="@+id/btnnpwp"
@@ -258,17 +250,18 @@
                         android:layout_margin="5dp"
                         android:background="@drawable/imagenpwp"
                         android:gravity="center"
-                        android:text="foto npwp"
+                        android:text="foto ktp"
                         android:textColor="#ffff"
                         android:textSize="15sp" />
 
+
                     <ImageView
-                        android:id="@+id/imagenpwp"
-                        android:layout_width="300dp"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/foun"></ImageView>
+                        android:id="@+id/imagektp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="400dp"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="10dp"
+                        android:src="@drawable/foun" />
 
                     <Button
                         android:id="@+id/btnbukti"
@@ -284,11 +277,10 @@
 
                     <ImageView
                         android:id="@+id/imagebukti"
-                        android:layout_width="300dp"
-                        android:layout_height="200dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/foun"></ImageView>
+                        android:src="@drawable/iclauncerblack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="400dp"
+                        android:layout_gravity="center_horizontal" />
 
                     <Button
                         android:id="@+id/btnkirim"

@@ -1,5 +1,6 @@
 package com.rkrzmail.mobilesales;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,12 +31,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.rkrzmail.mobilesales.APIService.APIClient2;
 import com.rkrzmail.mobilesales.APIService.APIInterfacesRest;
 import com.rkrzmail.mobilesales.APIService.AppUtil;
@@ -45,9 +49,9 @@ import com.rkrzmail.mobilesales.model.dataupload.DataUpload;
 import com.rkrzmail.mobilesales.model.dataupload.Datum;
 import com.rkrzmail.mobilesales.model.gagalpickup.GetGagalPickUp;
 import com.rkrzmail.mobilesales.model.pickup2.ModelPickup2;
-import com.rkrzmail.mobilesales.model.reason.ModelReason;
 import com.rkrzmail.mobilesales.model.upload.Data;
 import com.rkrzmail.mobilesales.model.upload.PostUpload2;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,26 +74,26 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     public static final int CAMERA1 = 1213;
     public static final int CAMERA2 = 1214;
     public static final int CAMERA3 = 1215;
-    SimpleDateFormat sdf;
     Datum datum;
-    Data data;
-    DataUpload modelupload;
-    TextView txtpickup, txtlat, txtreskedule;
+    TextView txtpickup, txtlat;
     EditText txtnama, txtphone, txtpos, txtkota, txtalamat, txtid;
-    EditText etData, txtdate, txtkonversi, txtnote;
+    EditText txtdate, txtkonversi, txtnote;
     Button btnktp, btnnpwp, btnbukti, btnkirim;
     ImageView imagektp, imagenpwp, imagebukti;
-    String sm, filePath, latitude, longitude, kode, Gnama, filePath2, filePath3;
+    String sm, filePath, latitude, longitude, Gnama, filePath2, filePath3, GNIK;
     private static final int REQUEST_LOCATION = 1;
-    Spinner spinnerpickup, spinnerreason, spinnerreasongagal, spinnerreasoncancel;
+    Spinner spinnerpickup, spinnerreasongagal, spinnerreasoncancel;
     LocationManager locationManager;
-    private Calendar myCalendar;
     double latitude2, longitude2;
     SharedPreferences pref;
     double latitude3, longitude3;
     Bitmap selectedImage, selectedImage2, selectedImage3;
-    String now;
+    String now1;
+    Button btndate;
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat dateFormatter;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,34 +101,30 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         setContentView(R.layout.activity_second);
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sm = pref.getString("mscode", "mscode");
+        GNIK = pref.getString("nik", "nik");
         Gnama = pref.getString("name", "name");
-        // etData=findViewById(R.id.date);
-
-        myCalendar = Calendar.getInstance();
-
         datum = getIntent().getParcelableExtra("id");
-
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         initView();
         konversi();
         initSpinnerPickUp();
-        initSpinnerReason();
         initSpinnerGagalPickUp();
         initSpinnerCancelPickUp();
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    Activity#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for Activity#requestPermissions for more details.
+//            return;
+//        }
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         if (Build.VERSION.SDK_INT >= 23) {
             requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
@@ -139,12 +139,16 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        btndate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datepicker();
+            }
+        });
         btnktp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();
                 capturepicktp();
-
             }
         });
 
@@ -154,17 +158,16 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 capturepicnpwp();
             }
         });
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            onGPS();
+        } else {
+            //gps already exist
+            getLocation();
+        }
         btnbukti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    onGPS();
-                } else {
-                    //gps already exist
-                    getLocation();
-                }
                 capturepicbukti();
             }
         });
@@ -172,26 +175,88 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         btnkirim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (txtreskedule.getText().toString() != null) {
-                    txtpickup.setText("0000-00-00 00:00:00");
+                TextView errorText = (TextView)spinnerpickup.getSelectedView();
+                if(txtlat.getText().toString().equalsIgnoreCase("null,null")){
+                    Snackbar.make(v, "silahkan nyalakan permission location", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                 }
-                sendDataActivity();
-                sendDataUpload();
-                finish();
+                else if (spinnerpickup.getSelectedItem().toString().contains("- Pilih -")){
+                    errorText.setText("Cek kembali jenis pick up");
+                    errorText.setError("");
+                    Snackbar.make(v, "Cek kembali jenis pick up", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                else if (!txtlat.getText().toString().equalsIgnoreCase("null,null") && !spinnerpickup.getSelectedItem().toString().contains("- Pilih -")){
+                if (txtdate.getText().toString().length() == 0) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    now1 = formatter.format(new Date());
+                    txtpickup.setText(now1);
+                        sendDataActivity();
+                        sendDataUpload();
+                        finish();
+                } else if (txtdate.getText().toString().length() >= 0){
+                    txtpickup.setText("0000-00-00 00:00:00");
+                    sendDataActivity();
+                    sendDataUpload();
+                    finish();
+                } else if (spinnerpickup.getSelectedItem().toString().contains("1004")){
+                    spinnerreasoncancel.setSelection(0);
+                    spinnerreasongagal.setSelection(0);
+                    sendDataActivity();
+                    sendDataUpload();
+                    finish();
+                }
+                }
             }
         });
         txtlat.setText(latitude + "," + longitude);
         txtkonversi.setText(latitude3 + "," + longitude3);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        now = formatter.format(new Date());
-        txtpickup.setText(now);
     }
+
+    private void datepicker() {
+        /**
+         * Calendar untuk mendapatkan tanggal sekarang
+         */
+        Calendar newCalendar = Calendar.getInstance();
+
+        /**
+         * Initiate DatePicker dialog
+         */
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                /**
+                 * Method ini dipanggil saat kita selesai memilih tanggal di DatePicker
+                 */
+
+                /**
+                 * Set Calendar untuk menampung tanggal yang dipilih
+                 */
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+
+                /**
+                 * Update TextView dengan tanggal yang kita pilih
+                 */
+                txtdate.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        /**
+         * Tampilkan DatePicker dialog
+         */
+        datePickerDialog.show();
+    }
+
+
 
     public void selectspinner(){
         if (spinnerpickup.getSelectedItemPosition() == 0) {
+            btndate.setVisibility(View.GONE);
             spinnerpickup.setVisibility(View.VISIBLE);
-            txtreskedule.setVisibility(View.GONE);
-            spinnerreason.setVisibility(View.GONE);
             spinnerreasongagal.setVisibility(View.GONE);
             spinnerreasoncancel.setVisibility(View.GONE);
             txtdate.setVisibility(View.GONE);
@@ -201,9 +266,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             imagenpwp.setVisibility(View.VISIBLE);
         }
         if (spinnerpickup.getSelectedItemPosition() == 1) {
-            //spinnerpickup.setVisibility(View.VISIBLE);
-            txtreskedule.setVisibility(View.GONE);
-            spinnerreason.setVisibility(View.GONE);
+            btndate.setVisibility(View.GONE);
             spinnerreasongagal.setVisibility(View.GONE);
             spinnerreasoncancel.setVisibility(View.GONE);
             txtpickup.setVisibility(View.VISIBLE);
@@ -214,10 +277,8 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             imagenpwp.setVisibility(View.VISIBLE);
         }
         if (spinnerpickup.getSelectedItemPosition() == 2) {
-            // spinnerpickup.setVisibility(View.VISIBLE);
-            txtreskedule.setVisibility(View.GONE);
+            btndate.setVisibility(View.GONE);
             txtpickup.setVisibility(View.GONE);
-            spinnerreason.setVisibility(View.GONE);
             spinnerreasongagal.setVisibility(View.VISIBLE);
             spinnerreasoncancel.setVisibility(View.GONE);
             txtdate.setVisibility(View.GONE);
@@ -227,10 +288,8 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             imagenpwp.setVisibility(View.GONE);
         }
         if (spinnerpickup.getSelectedItemPosition() == 3) {
-            //spinnerpickup.setVisibility(View.VISIBLE);
-            txtreskedule.setVisibility(View.GONE);
+            btndate.setVisibility(View.GONE);
             txtpickup.setVisibility(View.GONE);
-            spinnerreason.setVisibility(View.GONE);
             spinnerreasongagal.setVisibility(View.GONE);
             spinnerreasoncancel.setVisibility(View.VISIBLE);
             txtdate.setVisibility(View.GONE);
@@ -240,10 +299,8 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             imagenpwp.setVisibility(View.GONE);
         }
         if (spinnerpickup.getSelectedItemPosition() == 4) {
-            //spinnerpickup.setVisibility(View.VISIBLE);
-            txtreskedule.setVisibility(View.VISIBLE);
+            btndate.setVisibility(View.VISIBLE);
             txtpickup.setVisibility(View.GONE);
-            spinnerreason.setVisibility(View.GONE);
             spinnerreasongagal.setVisibility(View.GONE);
             spinnerreasoncancel.setVisibility(View.GONE);
             txtdate.setVisibility(View.VISIBLE);
@@ -270,7 +327,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     }
 
     private void initView() {
-        txtreskedule = findViewById(R.id.txtreskedule);
+        btndate= findViewById(R.id.btndate);
         txtlat = findViewById(R.id.txtlat);
         txtpickup = findViewById(R.id.txtpickup);
         txtdate = findViewById(R.id.txtdate);
@@ -279,7 +336,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         txtkonversi = findViewById(R.id.txtkonversi);
         btnkirim = findViewById(R.id.btnkirim);
         spinnerpickup = findViewById(R.id.spinnerpickup);
-        spinnerreason = findViewById(R.id.spinnerreason);
         spinnerreasongagal = findViewById(R.id.spinnerreasongagal);
         spinnerreasoncancel = findViewById(R.id.spinnerreasoncancel);
         btnktp = findViewById(R.id.btnktp);
@@ -324,25 +380,37 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         startActivityForResult(intent1, CAMERA3);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 // if the result is capturing Image
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA1 && resultCode == Activity.RESULT_OK) {
             filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+            //Loading Image from URL
+            Picasso.get()
+                    .load(filePath).
+                    resize(400, 400)
+                    .into(imagenpwp);
             selectedImage = BitmapFactory.decodeFile(filePath);
-            imagektp.setImageBitmap(selectedImage);
+            imagenpwp.setImageBitmap(selectedImage);
             Log.d("UpdateActivity", "Onactivityresultsetimagenpwp" +filePath);
         }
         if (requestCode == CAMERA2 && resultCode == Activity.RESULT_OK) {
             filePath2 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+            Picasso.get()
+                    .load(filePath2).
+                    resize(400, 400)
+                    .into(imagektp);
             selectedImage2 = BitmapFactory.decodeFile(filePath2);
-            imagenpwp.setImageBitmap(selectedImage2);
+            imagektp.setImageBitmap(selectedImage2);
             Log.d("UpdateActivity", "Onactivityresultsetimagektp" +filePath2);
         }
         if (requestCode == CAMERA3 && resultCode == Activity.RESULT_OK) {
             filePath3 = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+            Picasso.get()
+                    .load(filePath3).
+                    resize(400, 400)
+                    .into(imagebukti);
             selectedImage3 = BitmapFactory.decodeFile(filePath3);
             imagebukti.setImageBitmap(selectedImage3);
             Log.d("UpdateActivity", "Onactivityresultsetimagebukti" +filePath3);
@@ -410,7 +478,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void initSpinnerPickUp() {
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<ModelPickup2> data = apiInterface.getPickUp("sidik123");
+        final Call<ModelPickup2> data = apiInterface.getPickUp("B3ndhilDik4");
         data.enqueue(new Callback<ModelPickup2>() {
             @Override
             public void onResponse(Call<ModelPickup2> call, Response<ModelPickup2> response) {
@@ -418,8 +486,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     ModelPickup2 listdata = response.body();
                     List<String> listSpinner = new ArrayList<String>();
                     for (int i = 0; i < listdata.getData().size(); i++) {
-                        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        pref.edit().putString("kode", listdata.getData().get(i).getKodePickUp().toString()).commit();
                         String code = listdata.getData().get(i).getKodePickUp();
                         String status = listdata.getData().get(i).getStatus();
                         listSpinner.add(code + "  " + status);
@@ -443,7 +509,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void initSpinnerGagalPickUp() {
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<GetGagalPickUp> data = apiInterface.getGagalPickUp("sidik123");
+        final Call<GetGagalPickUp> data = apiInterface.getGagalPickUp("B3ndhilDik4");
         data.enqueue(new Callback<GetGagalPickUp>() {
             @Override
             public void onResponse(Call<GetGagalPickUp> call, Response<GetGagalPickUp> response) {
@@ -451,8 +517,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     GetGagalPickUp listdata = response.body();
                     List<String> listSpinner = new ArrayList<String>();
                     for (int i = 0; i < listdata.getData().size(); i++) {
-                        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        //pref.edit().putString("kode",listdata.getData().get(i).getKodeReasonGagal().toString()).commit();
                         String code = listdata.getData().get(i).getKodeReasonGagal();
                         String status = listdata.getData().get(i).getNamaReasonGagal();
                         listSpinner.add(code + "  " + status);
@@ -466,7 +530,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     Toast.makeText(UpdateActivity.this, "Gagal mengambil data shift", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<GetGagalPickUp> call, Throwable t) {
                 Toast.makeText(UpdateActivity.this, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
@@ -476,7 +539,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     private void initSpinnerCancelPickUp() {
         final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<GetCancelPickUp> data = apiInterface.getCancelPickUp("sidik123");
+        final Call<GetCancelPickUp> data = apiInterface.getCancelPickUp("B3ndhilDik4");
         data.enqueue(new Callback<GetCancelPickUp>() {
             @Override
             public void onResponse(Call<GetCancelPickUp> call, Response<GetCancelPickUp> response) {
@@ -484,13 +547,9 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     GetCancelPickUp listdata = response.body();
                     List<String> listSpinner = new ArrayList<String>();
                     for (int i = 0; i < listdata.getData().size(); i++) {
-                        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        //pref.edit().putString("kode",listdata.getData().get(i).getKodeResonCancel().toString()).commit();
                         String code = listdata.getData().get(i).getKodeResonCancel();
                         String status = listdata.getData().get(i).getNamaResonCancel();
-                        // listSpinner.add(code);
                         listSpinner.add(code + "  " + status);
-                        //listSpinner.add(selesai);
                     }
                     listSpinner.add(0, "- Pilih -");
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(UpdateActivity.this,
@@ -501,41 +560,8 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     Toast.makeText(UpdateActivity.this, "Gagal mengambil data shift", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<GetCancelPickUp> call, Throwable t) {
-                Toast.makeText(UpdateActivity.this, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void initSpinnerReason() {
-        final APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
-        final Call<ModelReason> data = apiInterface.getReason("sidik123");
-        data.enqueue(new Callback<ModelReason>() {
-            @Override
-            public void onResponse(Call<ModelReason> call, Response<ModelReason> response) {
-                if (response.isSuccessful()) {
-                    ModelReason listdata1 = response.body();
-                    List<String> listSpinner1 = new ArrayList<String>();
-                    for (int i = 0; i < listdata1.getData().size(); i++) {
-                        String koder = listdata1.getData().get(i).getReasonCode();
-                        String reason = listdata1.getData().get(i).getReason();
-                        //listSpinner1.add(koder);
-                        listSpinner1.add(koder + "  " + reason);
-                        //listSpinner.add(selesai);
-                    }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(UpdateActivity.this,
-                            android.R.layout.simple_spinner_item, listSpinner1);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerreason.setAdapter(adapter);
-                } else {
-                    Toast.makeText(UpdateActivity.this, "Gagal mengambil data shift", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ModelReason> call, Throwable t) {
                 Toast.makeText(UpdateActivity.this, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
             }
         });
@@ -564,11 +590,8 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     //send post data with image
     private void sendDataUpload() {
-        SimpleDateFormat formatte = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String date = formatte.format(new Date());
-
-        SimpleDateFormat formatt = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        String hour = formatt.format(new Date());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+       String now = formatter.format(new Date());
 
         MultipartBody.Part imagenpwp = null;
         MultipartBody.Part imagektp = null;
@@ -651,7 +674,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 toRequestBody(AppUtil.replaceNull(spinner)),
                 toRequestBody(AppUtil.replaceNull(spinnergg)),
                 toRequestBody(AppUtil.replaceNull(spinnerrr)),
-                toRequestBody(AppUtil.replaceNull(txtpickup.getText().toString())),
+                toRequestBody(AppUtil.replaceNull(now1)),
                 toRequestBody(AppUtil.replaceNull(datum.getMsCode())),
                 toRequestBody(AppUtil.replaceNull(datum.getMsName())),
                 toRequestBody(AppUtil.replaceNull(datum.getSpvCode())),
@@ -669,7 +692,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 toRequestBody(AppUtil.replaceNull(datum.getProduct())),
                 toRequestBody(AppUtil.replaceNull(txtdate.getText().toString())),
                 toRequestBody(AppUtil.replaceNull(datum.getSourceCode())),
-                toRequestBody(AppUtil.replaceNull(date)),
+                toRequestBody(AppUtil.replaceNull(datum.getCreatedDate())),
                 toRequestBody(AppUtil.replaceNull(datum.getStatusValidasi())),
                 toRequestBody(AppUtil.replaceNull(datum.getValidasiBy())),
                 toRequestBody(AppUtil.replaceNull(datum.getStatusValidasiAdmin())),
@@ -705,7 +728,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 call.cancel();
             }
         });
-
     }
 
     //change string to requestbody
@@ -719,22 +741,23 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     }
 
     private void sendDataActivity() {
-        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        kode = pref.getString("kode", "kode");
+        String lspinner = spinnerpickup.getSelectedItem().toString();
+        String[] shift = lspinner.split(" ");
+        String spinner = shift[0];
 
         String idform = datum.getIdForm();
-        String id_detail = "id_detail";
+        String id_detail = datum.getId();
         String work = "worklist";
-        String df = "worklist";
-        String dt = "worklist";
-        String mc = sm;
-        String status = kode;
-        String ket = "worklist";
-
+        String df = "";
+        String dt = "";
+        String mc = GNIK;
+        String status = spinner;
+        String ket = "";
         String cb = Gnama;
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String now = formatter.format(new Date());
+
         RequestBody judul = RequestBody.create(MediaType.parse("multipart/form-data"), idform);
         RequestBody iddetail = RequestBody.create(MediaType.parse("multipart/form-data"), id_detail);
         RequestBody worklist = RequestBody.create(MediaType.parse("multipart/form-data"), work);
@@ -745,7 +768,6 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         RequestBody keterangan = RequestBody.create(MediaType.parse("multipart/form-data"), ket);
         RequestBody waktu = RequestBody.create(MediaType.parse("multipart/form-data"), now);
         RequestBody cby = RequestBody.create(MediaType.parse("multipart/form-data"), cb);
-
 
         APIInterfacesRest apiInterface = APIClient2.getClient().create(APIInterfacesRest.class);
         Call<PostActivity> postAdd = apiInterface.sendDataActivity(judul, iddetail, worklist, disfrom, disto, ms, sts, keterangan, waktu, cby);
@@ -765,6 +787,5 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                 call.cancel();
             }
         });
-
     }
 }

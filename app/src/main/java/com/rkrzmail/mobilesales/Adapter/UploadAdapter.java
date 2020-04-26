@@ -28,11 +28,7 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<Datum> dataItemList;
     private List<Datum> mFilteredList;
-    DataUpload modelupload;
-    Datum datum;
-    Context ctx;
     //utk membedakan xml
-    SharedPreferences pref;
     public UploadAdapter(List<Datum> dataItemList) {
         this.dataItemList = dataItemList;
         this.mFilteredList = new ArrayList<>(dataItemList);
@@ -46,13 +42,11 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_upload, parent, false);
         Penampung penampung = new Penampung(view);
         return penampung;
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         final Datum datum = dataItemList.get(position);
-        //((Penampung)holder).txtnama.setText("Name       : " + dataItemList.get(position).getNama());
         ((Penampung)holder).txtnama.setText(dataItemList.get(position).getUsername());
         ((Penampung)holder).txtcase.setText(dataItemList.get(position).getNoCase());
         ((Penampung)holder).txtketerangan.setText((dataItemList.get(position).getRemark()));
@@ -100,26 +94,6 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return filterResults;
             }
 
-//                String charString = charSequence.toString();
-//
-//                if (charString.isEmpty()) {
-//
-//                    dataItemList = mFilteredList;
-//                } else {
-//
-//                    List<Datum> filteredList = new ArrayList<>();
-//
-//                    for (Datum datum : mFilteredList) {
-//
-//                        if (datum.getUsername().toLowerCase().contains(charString)) {
-//                            filteredList.add(datum);
-//                        }
-//                    }
-
-//                    dataItemList = filteredList;
-//                }
-
-
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
@@ -154,20 +128,6 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             txtpos  = (TextView) itemView.findViewById(R.id.txtpos);
             txtkota  = (TextView) itemView.findViewById(R.id.txtkota);
             txtalamat  = (TextView) itemView.findViewById(R.id.txtalamat);
-
-            //            cardView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    datum= createNewUpload();
-//                    Intent intent = new Intent(v.getContext(), SecondActivity.class);
-//                   // intent.putExtra("username", datum.getUsername());
-////                    pref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-////                    pref.edit().putString("id", datum.getId()).commit();
-//                     intent.putExtra("id",(Parcelable) datum);
-//                     //intent.putExtra(SecondActivity.TAP_PRODUK, (Parcelable) datum);
-//                     v.getContext().startActivity(intent);
-//                }
-//            });
         }
 
         @Override

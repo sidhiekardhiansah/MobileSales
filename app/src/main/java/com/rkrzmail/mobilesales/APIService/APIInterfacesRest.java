@@ -10,12 +10,8 @@ import com.rkrzmail.mobilesales.model.Login.ModelLogin;
 import com.rkrzmail.mobilesales.model.activity.PostActivity;
 import com.rkrzmail.mobilesales.model.cancelpickup.GetCancelPickUp;
 import com.rkrzmail.mobilesales.model.gagalpickup.GetGagalPickUp;
-import com.rkrzmail.mobilesales.model.pickup.ModelPickup;
 import com.rkrzmail.mobilesales.model.pickup2.ModelPickup2;
-import com.rkrzmail.mobilesales.model.tes.UpdateTes;
-import com.rkrzmail.mobilesales.model.tes.modeltes;
 import com.rkrzmail.mobilesales.model.dataupload.DataUpload;
-import com.rkrzmail.mobilesales.model.reason.ModelReason;
 import com.rkrzmail.mobilesales.model.upload.PostUpload2;
 
 import java.util.HashMap;
@@ -127,7 +123,6 @@ public interface APIInterfacesRest {
             @Part("notes") RequestBody notes
     );
 
-
     @Multipart
     @POST("activity")
     Call<PostActivity> sendDataActivity(
@@ -142,23 +137,6 @@ public interface APIInterfacesRest {
             @Part("created_date") RequestBody created_date,
             @Part("created_by") RequestBody created_by
     );
-    @Multipart
-    @POST("tes")
-    Call<modeltes> sendTes(
-            @Part MultipartBody.Part fotonpwp,
-            @Part MultipartBody.Part fotoktp,
-            @Part MultipartBody.Part fotobukti
-    );
-
-    @Multipart
-    @POST("tesedit")
-    Call<UpdateTes> UpdateTes(
-            @Part("id") RequestBody id,
-            @Part MultipartBody.Part fotonpwp,
-            @Part MultipartBody.Part fotoktp,
-            @Part MultipartBody.Part fotobukti
-    );
-
 
     @GET("upload")
     Call<DataUpload> getUpload(@Query("X-API-KEY") String apikey);
@@ -171,8 +149,5 @@ public interface APIInterfacesRest {
 
     @GET("pickup")
     Call<ModelPickup2> getPickUp(@Query("X-API-KEY") String apikey);
-
-    @GET("reason")
-    Call<ModelReason> getReason(@Query("X-API-KEY") String apikey);
 
 }

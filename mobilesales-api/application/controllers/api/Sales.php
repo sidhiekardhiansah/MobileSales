@@ -106,57 +106,7 @@ public function cancelpickup_get(){
     }
     }
 
-    public function tes_post(){
-        $ktp=$this->uploadImageKTP();
-        $npwp=$this->uploadImageNPWP();
-        $bukti= $this->uploadImageBukti();
 
-        
-        $data= [
-                'image_name_pemilik' => $npwp,
-                'image_name_ktp' => $ktp,
-                'image_name_bukti' => $bukti,
-                'location' => $this->input->post('location')
-        ];
-
-        if($this->Sales_model->createGambar($data)> 0){
-            $this->response([
-                'status' => true,
-                'message' => 'created successfully'
-            ], REST_Controller::HTTP_CREATED);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => ' created failed'
-            ], REST_Controller::HTTP_BAD_REQUEST); 
-        }
-    }
-
-    public function tesedit_post(){
-        $id= $this->input->post('id');
-        $ktp=$this->uploadImageKTP();
-        $npwp=$this->uploadImageNPWP();
-        $bukti= $this->uploadImageBukti();
-
-        
-        $data= [
-                'image_name_pemilik' => $npwp,
-                'image_name_ktp' => $ktp,
-                'image_name_bukti' => $bukti
-        ];
-
-        if($this->Sales_model->updategambar($data, $id)> 0){
-            $this->response([
-                'status' => true,
-                'message' => 'updated successfully'
-            ], REST_Controller::HTTP_CREATED);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'updated failed'
-            ], REST_Controller::HTTP_BAD_REQUEST); 
-        }
-    }
 
 
     public function activity_post(){
@@ -324,10 +274,7 @@ public function cancelpickup_get(){
                 'spv_code' => $this->input->post('spv_code'),
                 'asm_code' => $this->input->post('asm_code'),
                 'image_type' => $this->input->post('image_type'),
-                'image_name_pemilik' => $this->uploadImageNPWP(),
-
-                
-                
+                'image_name_pemilik' => $this->uploadImageNPWP(),                
                 'image_name_ktp' => $this->uploadImageKTP(),
                 'geo_info_pemilik' => $this->input->post('geo_info_pemilik'),
                 'geo_info_ktp' => $this->input->post('geo_info_ktp'),

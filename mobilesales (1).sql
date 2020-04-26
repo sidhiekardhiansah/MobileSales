@@ -44,7 +44,7 @@ CREATE TABLE `keys` (
 --
 
 INSERT INTO `keys` (`id`, `user_id`, `key`, `level`, `ignore_limits`, `is_private_key`, `ip_addresses`, `date_created`) VALUES
-(1, 1, 'sidik123', 1, 0, 0, NULL, 1);
+(1, 1, 'B3ndhilDik4', 1, 0, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
