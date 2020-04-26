@@ -33,7 +33,7 @@ public class APIClient2 implements Interceptor{
                 .build();
         return chain.proceed(authenticatedRequest);
     }
- //bismillah
+ //bismillahi
     public static Retrofit getClient() {
         OkHttpClient client = new OkHttpClient
                 .Builder()
