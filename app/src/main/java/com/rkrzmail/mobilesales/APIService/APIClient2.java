@@ -17,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClient2 implements Interceptor{
 
     private static Retrofit retrofit = null;
-
     private String credentials;
 
     public APIClient2 (String Username, String Password) {
@@ -33,23 +32,20 @@ public class APIClient2 implements Interceptor{
                 .build();
         return chain.proceed(authenticatedRequest);
     }
- //bismillahi
+
     public static Retrofit getClient() {
         OkHttpClient client = new OkHttpClient
                 .Builder()
                 .addInterceptor(new APIClient2("admin", "B3ndhilDika"))
                 .build();
-
         GsonBuilder gb = new GsonBuilder();
         gb.registerTypeAdapter(String.class, new StringConverter());
         Gson gson = gb.create();
-
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.43.164/mobilesales-api/api/sales/")
+                .baseUrl("http://mangekay.my.id/mobilesales-api/api/sales/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build();
-
         return retrofit;
     }
 }

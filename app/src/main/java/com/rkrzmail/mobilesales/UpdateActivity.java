@@ -12,10 +12,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,7 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.flatdialoglibrary.dialog.FlatDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.rkrzmail.mobilesales.APIService.APIClient2;
 import com.rkrzmail.mobilesales.APIService.APIInterfacesRest;
@@ -84,7 +86,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     private static final int REQUEST_LOCATION = 1;
     Spinner spinnerpickup, spinnerreasongagal, spinnerreasoncancel;
     LocationManager locationManager;
-    double latitude2, longitude2;
+    String latitude2, longitude2;
     SharedPreferences pref;
     double latitude3, longitude3;
     Bitmap selectedImage, selectedImage2, selectedImage3;
@@ -92,6 +94,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
     Button btndate;
     private DatePickerDialog datePickerDialog;
     private SimpleDateFormat dateFormatter;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceType")
@@ -113,18 +116,19 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    Activity#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for Activity#requestPermissions for more details.
-//            return;
-//        }
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         if (Build.VERSION.SDK_INT >= 23) {
             requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
@@ -163,6 +167,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             onGPS();
         } else {
             //gps already exist
+        //    txtlat.setText(latitude + "," + longitude);
             getLocation();
         }
         btnbukti.setOnClickListener(new View.OnClickListener() {
@@ -193,65 +198,61 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
                     txtpickup.setText(now1);
                         sendDataActivity();
                         sendDataUpload();
-                        finish();
+
+                    //showIconDialog();
                 } else if (txtdate.getText().toString().length() >= 0){
                     txtpickup.setText("0000-00-00 00:00:00");
                     sendDataActivity();
                     sendDataUpload();
-                    finish();
-                } else if (spinnerpickup.getSelectedItem().toString().contains("1004")){
-                    spinnerreasoncancel.setSelection(0);
-                    spinnerreasongagal.setSelection(0);
-                    sendDataActivity();
-                    sendDataUpload();
-                    finish();
+                    //showIconDialog();
                 }
+//                else if (spinnerpickup.getSelectedItem().toString().contains("1004")){
+//                    spinnerreasoncancel.setSelection(0);
+//                    spinnerreasongagal.setSelection(0);
+//                    sendDataActivity();
+//                    sendDataUpload();
+//                    finish();
+//                }
                 }
             }
         });
-        txtlat.setText(latitude + "," + longitude);
+        txtlat.setText(latitude2 + "," + longitude2);
         txtkonversi.setText(latitude3 + "," + longitude3);
     }
 
-    private void datepicker() {
-        /**
-         * Calendar untuk mendapatkan tanggal sekarang
-         */
-        Calendar newCalendar = Calendar.getInstance();
+    private void showIconDialog() {
+        final FlatDialog flatDialog = new FlatDialog(UpdateActivity.this);
+        flatDialog.setIcon(R.drawable.berhasil)
+                .setTitle("      Sukses Update Data ")
+                .setTitleColor(Color.parseColor("#000000"))
+                .setBackgroundColor(Color.parseColor("#FFFFFF"))
+                .setSecondButtonColor(Color.parseColor("#0000FF"))
+                .setSecondButtonTextColor(Color.parseColor("#FFFFFF"))
+                .setSecondButtonText("OK")
+                .withSecondButtonListner(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                })
+                .show();
+    }
 
-        /**
-         * Initiate DatePicker dialog
-         */
+    private void datepicker() {
+
+        Calendar newCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                /**
-                 * Method ini dipanggil saat kita selesai memilih tanggal di DatePicker
-                 */
-
-                /**
-                 * Set Calendar untuk menampung tanggal yang dipilih
-                 */
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
-
-                /**
-                 * Update TextView dengan tanggal yang kita pilih
-                 */
                 txtdate.setText(dateFormatter.format(newDate.getTime()));
             }
 
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-
-        /**
-         * Tampilkan DatePicker dialog
-         */
         datePickerDialog.show();
     }
-
-
 
     public void selectspinner(){
         if (spinnerpickup.getSelectedItemPosition() == 0) {
@@ -360,7 +361,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         Intent intent2 = new Intent(this, ImageSelectActivity.class);
         intent2.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent2.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
-        intent2.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
+        intent2.putExtra(ImageSelectActivity.FLAG_GALLERY, false);//default is true
         startActivityForResult(intent2, CAMERA1);
     }
 
@@ -368,7 +369,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
-        intent.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_GALLERY, false);//default is true
         startActivityForResult(intent, CAMERA2);
     }
 
@@ -376,7 +377,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
         Intent intent1 = new Intent(this, ImageSelectActivity.class);
         intent1.putExtra(ImageSelectActivity.FLAG_COMPRESS, true);//default is true
         intent1.putExtra(ImageSelectActivity.FLAG_CAMERA, true);//default is true
-        intent1.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
+        intent1.putExtra(ImageSelectActivity.FLAG_GALLERY, false);//default is true
         startActivityForResult(intent1, CAMERA3);
     }
 
@@ -569,8 +570,9 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
 
     @Override
     public void onLocationChanged(Location location) {
-        latitude2 = location.getLatitude();
-        longitude2 = location.getLongitude();
+        latitude2 = String.valueOf(location.getLatitude());
+        longitude2 = String.valueOf(location.getLongitude());
+        txtlat.setText(latitude2+","+longitude2);
     }
 
     @Override
@@ -718,10 +720,40 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             public void onResponse(Call<PostUpload2> call, Response<PostUpload2> response) {
                 PostUpload2 responServer = response.body();
                 if (responServer != null) {
-                    Toast.makeText(UpdateActivity.this, responServer.getMessage(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(UpdateActivity.this, responServer.getMessage(), Toast.LENGTH_LONG).show();
+                    final FlatDialog flatDialog = new FlatDialog(UpdateActivity.this);
+                    flatDialog.setIcon(R.drawable.berhasil)
+                            .setTitle("        "+responServer.getMessage())
+                            .setTitleColor(Color.parseColor("#000000"))
+                            .setBackgroundColor(Color.parseColor("#FFFFFF"))
+                            .setSecondButtonColor(Color.parseColor("#0000FF"))
+                            .setSecondButtonTextColor(Color.parseColor("#FFFFFF"))
+                            .setSecondButtonText("OK")
+                            .withSecondButtonListner(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                } else {
+                    final FlatDialog flatDialog = new FlatDialog(UpdateActivity.this);
+                    flatDialog.setIcon(R.drawable.berhasil)
+                            .setTitle("        "+responServer.getMessage())
+                            .setTitleColor(Color.parseColor("#000000"))
+                            .setBackgroundColor(Color.parseColor("#FFFFFF"))
+                            .setSecondButtonColor(Color.parseColor("#0000FF"))
+                            .setSecondButtonTextColor(Color.parseColor("#FFFFFF"))
+                            .setSecondButtonText("OK")
+                            .withSecondButtonListner(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    finish();
+                                }
+                            })
+                            .show();
                 }
             }
-
             @Override
             public void onFailure(Call<PostUpload2> call, Throwable t) {
                 Toast.makeText(UpdateActivity.this, "Maaf koneksi bermasalah", Toast.LENGTH_LONG).show();
@@ -788,4 +820,7 @@ public class UpdateActivity extends AppCompatActivity implements LocationListene
             }
         });
     }
+
+
+
 }
